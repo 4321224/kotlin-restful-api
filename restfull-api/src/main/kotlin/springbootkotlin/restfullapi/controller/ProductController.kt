@@ -1,10 +1,8 @@
 package springbootkotlin.restfullapi.controller
 
+
 import org.springframework.web.bind.annotation.*
-import springbootkotlin.restfullapi.model.CreateProduct
-import springbootkotlin.restfullapi.model.ProductResponse
-import springbootkotlin.restfullapi.model.UpdateProduct
-import springbootkotlin.restfullapi.model.WebResponse
+import springbootkotlin.restfullapi.model.*
 import springbootkotlin.restfullapi.service.ProductService
 
 
@@ -18,7 +16,7 @@ class ProductController (val productService: ProductService){
     fun createProducts(@RequestBody body: CreateProduct): WebResponse<ProductResponse> {
         val productResponse = productService.create(body)
         return WebResponse(
-            code = 200,
+            code = 201,
             status = "OK",
             data = productResponse
         )
@@ -47,6 +45,33 @@ class ProductController (val productService: ProductService){
             code = 200,
             status = "OK",
             data = productResponse
+        )
+    }
+    @DeleteMapping(
+        value = ["/api/products/{idProduct}"],
+        produces = ["application/json"]
+    )
+    fun deleteProduct(@PathVariable("idProduct") id: String): WebResponse<String>{
+        productService.delete(id)
+        return WebResponse(
+            code = 200,
+            status = "OK",
+            data = id
+
+        )
+    }
+    @GetMapping(
+        value = ["/api/products"],
+        produces = ["application/json"]
+    )
+    fun lisProducts(@RequestParam(value = "size", defaultValue = "10") size: Int,
+                    @RequestParam(value = "page", defaultValue = "0") page: Int): WebResponse<List<ProductResponse>>{
+        val request = ListProduct(page = page, size = size)
+        val responses = productService.list(request)
+        return WebResponse(
+            code = 200,
+            status = "OK",
+            data = responses
         )
     }
 }

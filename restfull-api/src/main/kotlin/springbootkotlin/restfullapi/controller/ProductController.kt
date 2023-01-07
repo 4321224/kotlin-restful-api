@@ -22,4 +22,16 @@ class ProductController (val productService: ProductService){
             data = productResponse
         )
     }
+    @GetMapping(
+        value = ["/api/products/{idProduct}"],
+        produces = ["application/json"]
+    )
+    fun getProduct(@PathVariable("idProduct") id:String): WebResponse<ProductResponse> {
+        val productResponse = productService.get(id)
+        return WebResponse(
+            code = 200,
+            status = "OK",
+            data = productResponse
+        )
+    }
 }
